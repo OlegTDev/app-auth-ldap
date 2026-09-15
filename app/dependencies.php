@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Application\Services\JwtService;
+use App\Application\Services\LdapService;
 use App\Application\Settings\SettingsInterface;
 use DI\ContainerBuilder;
 use Monolog\Handler\StreamHandler;
@@ -26,5 +28,12 @@ return function (ContainerBuilder $containerBuilder) {
 
             return $logger;
         },
+        JwtService::class => fn(ContainerInterface $c) => new JwtService(env('APP_URL'), env('JWT_SECRET'), env('LIFESPAN', 60)),
+        LdapService::class => fn(ContainerInterface $c) => new LdapService(
+            connectionString: env('LDAP_CONNECTION_STRING'),
+            bindDn: env('LDAP_BIND_DN'),
+            bindPassword: env('LDAP_BIND_PASSWORD'),
+            findDn: env('LDAP_BASE_DN'),
+        ),
     ]);
 };
