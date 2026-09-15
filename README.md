@@ -1,42 +1,99 @@
-# Slim Framework 4 Skeleton Application
+# Микросервис windows-аутентификации (с передачей данных из LDAP)
 
-[![Coverage Status](https://coveralls.io/repos/github/slimphp/Slim-Skeleton/badge.svg?branch=master)](https://coveralls.io/github/slimphp/Slim-Skeleton?branch=master)
+Сервис используется для сквозной аутентификации через веб-сервер IIS / Apache в среде Active Directory.
 
-Use this skeleton application to quickly setup and start working on a new Slim Framework 4 application. This application uses the latest Slim 4 with Slim PSR-7 implementation and PHP-DI container implementation. It also uses the Monolog logger.
+### Принцип работы: 
+1. Сервис-инициатор (например, сайт на Laravel/Yii, не имеющий сквозной аутентификации) выполняет переадресацию браузера на данный микросервис с обязательным GET-параметром `return_url`.
+2. Микросервис выполняет аутентификацию средствами веб-сервера, извлекает учетную запись пользователя из серверных параметров (`REMOTE_USER`), выполняет поиск расширенных данных о пользователе на сервере LDAP (ФИО, почта, отдел, группы).
+3. Микросервис формирует защищенный `JWT-токен` с данными пользователя и выполняет обратную переадресацию на указанный `return_url`, передавая токен в GET-параметре `token`.
 
-This skeleton application was built for Composer. This makes setting up a new Slim Framework application quick and easy.
+---
 
-## Install the Application
 
-Run this command from the directory in which you want to install your new Slim Framework application. You will require PHP 7.4 or newer.
+## Требования
 
+* **PHP 8.3** и выше
+* Расширение **`php_ldap`** (должно быть включено в `php.ini`)
+
+На стороне сервиса-инициатора для возможности расшифровки полученного токена должна быть установлена библиотека `firebase/php-jwt`:
 ```bash
-composer create-project slim/slim-skeleton [my-app-name]
+composer require firebase/php-jwt
 ```
 
-Replace `[my-app-name]` with the desired directory name for your new application. You'll want to:
 
-* Point your virtual host document root to your new application's `public/` directory.
-* Ensure `logs/` is web writable.
+### Пример реализации проверки на сервисе-инициаторе:
+```php
+// 1. Извлечение параметра из адресной строки
+$redirectUrl = $response->getHeader('Location')[0];
+$tokenString = parse_url($redirectUrl, PHP_URL_QUERY);
+parse_str($tokenString, $result);
+// получаем чистый токен из адресной строки
+$jwtToken = $result['token'] ?? null;
 
-To run the application in development, you can run these commands 
+if (!\$jwtToken) {
+    throw new Exception('Токен авторизации отсутствует');
+}
 
-```bash
-cd [my-app-name]
-composer start
+// 2. Расшифровка данных (секретный ключ должен совпадать с ключом из текущего сервиса)
+$secretKey = env('JWT_SECRET');
+$decodedData = Firebase\JWT\JWT::decode($jwtToken, new Firebase\JWT\Key($secretKey, 'HS256'));
+
+// 3. Данные пользователя успешно получены
+username = decodedData->sAMAccountName;       // Доменный логин (например, ivanov)
+groups = decodedData->memberOf; // группы
+// и т.п.
+
 ```
 
-Or you can use `docker-compose` to run the app with `docker`, so you can run these commands:
+
+## Установка
+
+1. Клонировать репозиторий:
 ```bash
-cd [my-app-name]
-docker-compose up -d
+git clone https://github.com/OlegTDev/app-auth-ldap.git app-auth-ldap
 ```
-After that, open `http://localhost:8080` in your browser.
 
-Run this command in the application directory to run the test suite
+2. Перейти в папку с проектом и установить зависимости:
+```bash
+cd app-auth-ldap && composer install
+```
 
+3. **Важно для веб-сервера IIS:** Убедитесь, что для папки `logs/` в Windows выданы права на запись для группы "Пользователи". Без этого встроенный логгер Monolog будет вызывать ошибку сервера `500`.
+
+
+## Настройка конфигурации
+
+Создайте файл `.env` из примера:
+```bash
+cp .env.example .env
+```
+
+Настройте параметры в соответствии с вашей корпоративной сетью:
+```ini
+# Режим продакшена (true/false)
+PROD=true
+
+# Атрибут, в котором хранится учетная запись аутентифицированного пользователя на веб-сервере
+DOMAIN_USER_ATTR_LOGIN=REMOTE_USER
+
+# Адрес и порт текущего сервиса
+APP_URL=https://company.local
+
+# Ключ подписи JWT-токена (длина ключа должна быть минимум 32 символа!)
+JWT_SECRET=64_symbols_random_crypto_secure_string_here_1234567890abcdef
+
+# Настройки подключения к серверу LDAP / Active Directory
+LDAP_CONNECTION_STRING=ldap://dc.company.local:389
+LDAP_BIND_DN=service-account@company.local
+LDAP_BIND_PASSWORD="your_service_account_password"
+LDAP_BASE_DN="OU=Employees,DC=company,DC=local"
+```
+---
+
+### Тестирование
+
+Для запуска тестов выполните в консоли:
 ```bash
 composer test
 ```
 
-That's it! Now go build something cool.
