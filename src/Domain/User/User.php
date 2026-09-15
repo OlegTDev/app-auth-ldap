@@ -8,50 +8,51 @@ use JsonSerializable;
 
 class User implements JsonSerializable
 {
-    private ?int $id;
-
-    private string $username;
-
-    private string $firstName;
-
-    private string $lastName;
-
-    public function __construct(?int $id, string $username, string $firstName, string $lastName)
-    {
-        $this->id = $id;
-        $this->username = strtolower($username);
-        $this->firstName = ucfirst($firstName);
-        $this->lastName = ucfirst($lastName);
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getUsername(): string
-    {
-        return $this->username;
-    }
-
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
-
-    public function getLastName(): string
-    {
-        return $this->lastName;
-    }
+    public function __construct(
+        private string $sAMAccountName,
+        private string $cn,
+        private ?string $userPrincipalName = null,
+        private ?string $givenName = null,
+        private ?string $sn = null,
+        private ?string $displayName = null,
+        private ?string $mail = null,
+        private array $memberOf = [],
+        private ?string $company = null,
+        private ?string $department = null,
+        private ?string $title = null,
+        private ?string $physicalDeliveryOfficeName = null,
+        private ?string $telephoneNumber = null,
+        private ?string $streetAddress = null,
+        private ?string $postalCode = null,
+        private ?string $st = null,
+        private ?string $ipPhone = null,
+        private ?string $countryCode = null,
+        private ?string $lastLogon = null,
+    ) {}       
 
     #[\ReturnTypeWillChange]
     public function jsonSerialize(): array
     {
         return [
-            'id' => $this->id,
-            'username' => $this->username,
-            'firstName' => $this->firstName,
-            'lastName' => $this->lastName,
+            'sAMAccountName' => $this->sAMAccountName,
+            'cn' => $this->cn,
+            'userPrincipalName' => $this->userPrincipalName,
+            'givenName' => $this->givenName,
+            'sn' => $this->sn,
+            'displayName' => $this->displayName,
+            'mail' => $this->mail,
+            'memberOf' => $this->memberOf,
+            'company' => $this->company,
+            'department' => $this->department,
+            'title' => $this->title,
+            'physicalDeliveryOfficeName' => $this->physicalDeliveryOfficeName,
+            'telephoneNumber' => $this->telephoneNumber,
+            'streetAddress' => $this->streetAddress,
+            'postalCode' => $this->postalCode,
+            'st' => $this->st,
+            'ipPhone' => $this->ipPhone,
+            'countryCode' => $this->countryCode,
+            'lastLogon' => $this->lastLogon,
         ];
     }
 }
