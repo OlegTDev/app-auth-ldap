@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests;
 
 use DI\ContainerBuilder;
+use Dotenv\Dotenv;
 use Exception;
 use PHPUnit\Framework\TestCase as PHPUnit_TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -26,6 +27,10 @@ class TestCase extends PHPUnit_TestCase
      */
     protected function getAppInstance(): App
     {
+        // Dotenv
+        $dotEnv = Dotenv::createImmutable(dirname(__DIR__));
+        $dotEnv->safeLoad();
+
         // Instantiate PHP-DI ContainerBuilder
         $containerBuilder = new ContainerBuilder();
 
