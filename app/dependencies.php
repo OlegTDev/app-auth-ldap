@@ -10,7 +10,9 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Log\LoggerInterface;
+use Slim\Psr7\Factory\ResponseFactory;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
@@ -28,12 +30,13 @@ return function (ContainerBuilder $containerBuilder) {
 
             return $logger;
         },
-        JwtService::class => fn(ContainerInterface $c) => new JwtService(env('APP_URL'), env('JWT_SECRET'), env('LIFESPAN', 60)),
-        LdapService::class => fn(ContainerInterface $c) => new LdapService(
+        JwtService::class => fn() => new JwtService(env('APP_URL'), env('JWT_SECRET'), env('LIFESPAN', 60)),
+        LdapService::class => fn() => new LdapService(
             connectionString: env('LDAP_CONNECTION_STRING'),
             bindDn: env('LDAP_BIND_DN'),
             bindPassword: env('LDAP_BIND_PASSWORD'),
             findDn: env('LDAP_BASE_DN'),
         ),
+        ResponseFactoryInterface::class => fn() => new ResponseFactory(),
     ]);
 };
