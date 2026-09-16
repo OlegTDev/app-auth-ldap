@@ -5,3 +5,11 @@ if (!function_exists('env')) {
         return $_ENV[$key] ?? $default;
     }
 }
+
+if (!function_exists('concatenateUriWithJwt')) {
+    function concatenateUriWithJwt(string $returnUrl, string $jwtToken): string
+    {
+        $separator = (parse_url($returnUrl, PHP_URL_QUERY) == NULL) ? '?' : '&';
+        return "{$returnUrl}{$separator}token=$jwtToken";
+    }
+}
