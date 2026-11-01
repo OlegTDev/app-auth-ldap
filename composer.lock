@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3b622acb03a883f6014200a848f79b50",
+    "content-hash": "4009795cc9b350d5921595d4132f7155",
     "packages": [
         {
             "name": "akrabat/ip-address-middleware",
@@ -1345,29 +1345,29 @@
         },
         {
             "name": "symfony/ldap",
-            "version": "v7.4.10",
+            "version": "v8.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/ldap.git",
-                "reference": "bba9e535d29c15bd6842bf85bc341debfbb4bcb3"
+                "reference": "b970bdaeba8daba3917f00a4e3ba1adea124e6ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/ldap/zipball/bba9e535d29c15bd6842bf85bc341debfbb4bcb3",
-                "reference": "bba9e535d29c15bd6842bf85bc341debfbb4bcb3",
+                "url": "https://api.github.com/repos/symfony/ldap/zipball/b970bdaeba8daba3917f00a4e3ba1adea124e6ea",
+                "reference": "b970bdaeba8daba3917f00a4e3ba1adea124e6ea",
                 "shasum": ""
             },
             "require": {
                 "ext-ldap": "*",
-                "php": ">=8.2",
-                "symfony/options-resolver": "^7.3|^8.0"
+                "php": ">=8.4.1",
+                "symfony/options-resolver": "^7.4|^8.0"
             },
             "conflict": {
-                "symfony/security-core": "<6.4"
+                "symfony/security-core": "<8.0"
             },
             "require-dev": {
-                "symfony/security-core": "^6.4|^7.0|^8.0",
-                "symfony/security-http": "^6.4|^7.0|^8.0"
+                "symfony/security-core": "^8.0",
+                "symfony/security-http": "^7.4|^8.0"
             },
             "type": "library",
             "autoload": {
@@ -1399,7 +1399,7 @@
                 "ldap"
             ],
             "support": {
-                "source": "https://github.com/symfony/ldap/tree/v7.4.10"
+                "source": "https://github.com/symfony/ldap/tree/v8.1.0"
             },
             "funding": [
                 {
@@ -1419,24 +1419,24 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-04T13:25:50+00:00"
+            "time": "2026-05-29T05:06:50+00:00"
         },
         {
             "name": "symfony/options-resolver",
-            "version": "v7.4.8",
+            "version": "v8.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/options-resolver.git",
-                "reference": "2888fcdc4dc2fd5f7c7397be78631e8af12e02b4"
+                "reference": "68cc43038d234c69d510c62f37bd0058b40d548a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/options-resolver/zipball/2888fcdc4dc2fd5f7c7397be78631e8af12e02b4",
-                "reference": "2888fcdc4dc2fd5f7c7397be78631e8af12e02b4",
+                "url": "https://api.github.com/repos/symfony/options-resolver/zipball/68cc43038d234c69d510c62f37bd0058b40d548a",
+                "reference": "68cc43038d234c69d510c62f37bd0058b40d548a",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.2",
+                "php": ">=8.4.1",
                 "symfony/deprecation-contracts": "^2.5|^3"
             },
             "type": "library",
@@ -1470,7 +1470,7 @@
                 "options"
             ],
             "support": {
-                "source": "https://github.com/symfony/options-resolver/tree/v7.4.8"
+                "source": "https://github.com/symfony/options-resolver/tree/v8.1.10"
             },
             "funding": [
                 {
@@ -1490,7 +1490,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-03-24T13:12:05+00:00"
+            "time": "2026-10-18T14:56:39+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
